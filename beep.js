@@ -1,13 +1,12 @@
 const Gpio = require('onoff').Gpio;
 const beepGpio = new Gpio(22, 'out');
 
-function  beepOn(minutes) {
+function beepOn(minutes) {
     const ms = minutes * 60 * 1000;
-    let value = 1;
-    const beep= () => beepGpio.writeSync(1);
+    const beep = () => beepGpio.writeSync(1);
     const space = () => beepGpio.writeSync(0);
 
-    const beepUnit = ()  => {
+    const beepUnit = () => {
         beep();
         setTimeout(space, 150);
         setTimeout(beep, 180);

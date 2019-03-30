@@ -8,7 +8,6 @@ app.use(router.routes());
 
 app.get('/', async (ctx, next) => {
     console.log(ctx.method);
-    console.log(ctx.query);
     await next();
 });
 

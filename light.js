@@ -1,3 +1,4 @@
+// 驱动红外小夜灯
 const exec = require('child_process').exec;
 
 const init =  function OpenAndInitLightness()  {

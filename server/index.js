@@ -1,0 +1,67 @@
+// koa 服务
+const Koa = require('koa');
+const Router = require('koa-router');
+const static = require('koa-static');
+const path = require('path');
+
+const store = require('./store');
+const app = new Koa();
+
+
+const staticPath = './html';
+app.use(
+    static(path.join( __dirname,  staticPath))
+);
+
+
+const home = new Router();
+home.get('/', async (ctx, next) => {
+    ctx.status = 302;
+    ctx.redirect('/setting.html');
+});
+
+
+const api = new Router();
+const defaultSetting = {
+    morning: '09:90',
+    night: '90:90',
+    state: 'on'
+}
+const Event = require('events');
+class EventEmitter extends Event {}
+const emmiter = new EventEmitter();
+
+api.get('/get_setting', async (ctx, next) => {
+    let setting = await store.get();
+    if (!setting) {
+        setting = defaultSetting;
+        await store.set(setting);
+    }
+    ctx.body = {
+        errmsg: 'success',
+        data: setting
+    }
+}).post('/update_setting', async (ctx, next) => {
+    let setting = ctx.response;
+    await store.set(setting);
+    ctx.body = {
+        errmsg: 'success'
+    }
+    emmiter.emit('update');
+});
+
+
+const router = new Router();
+router.use('/', home.routes(), home.allowedMethods());
+router.use('/api', api.routes(), api.allowedMethods());
+
+
+app.use(router.routes()).use(router.allowedMethods());
+
+module.exports = {
+    start() {
+        app.listen(3000);
+    },
+    settingState: emmiter
+}
+

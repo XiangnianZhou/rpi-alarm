@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>闹铃设置</title>
+</head>
+<body>
+    <p>设置闹铃时间的:</p>
+    
+</body>
+<script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/update_setting');
+    var data = JSON.stringify({
+        'state': 'on',
+        morning: '000',
+        night: '888'
+    });
+    xhr.setRequestHeader('Content-type', 'application/json')
+    xhr.send(data);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            alert(xhr.responseText);
+        }
+        else {
+            alert(xhr.statusText);
+        }
+    }
+
+</script>
+</html>

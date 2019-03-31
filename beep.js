@@ -1,3 +1,4 @@
+// 蜂鸣器驱动
 const Gpio = require('onoff').Gpio;
 const beepGpio = new Gpio(22, 'out');
 

@@ -3,6 +3,7 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const static = require('koa-static');
 const path = require('path');
+const koaBody = require('koa-body');
 
 const store = require('./store');
 const app = new Koa();
@@ -12,6 +13,7 @@ const staticPath = './html';
 app.use(
     static(path.join( __dirname,  staticPath))
 );
+app.use(koaBody());
 
 
 const home = new Router();
@@ -41,8 +43,10 @@ api.get('/get_setting', async (ctx, next) => {
         errmsg: 'success',
         data: setting
     }
-}).post('/update_setting', async (ctx, next) => {
-    let setting = ctx.response;
+})
+api.post('/update_setting', async (ctx, next) => {
+    let setting = ctx.request.body;
+    console.log(setting)
     await store.set(setting);
     ctx.body = {
         errmsg: 'success'

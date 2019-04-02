@@ -1,3 +1,4 @@
+// 硬件控制入口
 const beep = require('./beep');
 const light = require('./light');
 

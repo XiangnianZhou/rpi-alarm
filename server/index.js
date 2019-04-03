@@ -25,9 +25,9 @@ home.get('/', async (ctx, next) => {
 
 const api = new Router();
 const defaultSetting = {
-    morning: '09:90',
-    night: '90:90',
-    state: 'on'
+    morning: '08:00',
+    night: '22:00',
+    isOPen: false
 }
 const Event = require('events');
 class EventEmitter extends Event {}
@@ -46,12 +46,11 @@ api.get('/get_setting', async (ctx, next) => {
 })
 api.post('/update_setting', async (ctx, next) => {
     let setting = ctx.request.body;
-    console.log(setting)
     await store.set(setting);
     ctx.body = {
         errmsg: 'success'
     }
-    emmiter.emit('update');
+    emmiter.emit('update', setting);
 });
 
 

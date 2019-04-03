@@ -5,28 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>闹铃设置</title>
+    <style>
+        h1 {
+            text-align: center;
+            margin: 20px 0 10px;
+            color: rgb(0, 0, 0, 0.8)
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        input {
+            height: 28px;
+            line-height: 28px;
+            font-size: 18px;
+            border: solid 1px rgb(0, 0, 0, 0.05)
+        }
+
+        input[type="checkbox"] {
+            height: 14px;
+            vertical-align: middle;
+        }
+
+        .input-box {
+            margin-bottom: 10px;
+        }
+
+        label {
+            line-height: 30px;
+            vertical-align: middle;
+        }
+
+    </style>
 </head>
 <body>
-    <p>设置闹铃时间的:</p>
+    <h1>闹铃设置</h1>
+    <main>
+            <div class="input-box">
+                <label for="morning">早上</label>
+                <input type="time" id="morming">
+            </div>
+        
+            <div class="input-box">
+                <label for="night">晚上</label>
+                <input type="time" id="night">
+            </div>
+
+            <div class="input-box">
+                    <input type="checkbox" id="switch">
+                    <label for="switch">打开闹钟</label>
+            </div>
+    </main>
+
+    <button id="submit-btn">提交</button>
     
 </body>
 <script>
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/update_setting');
-    var data = JSON.stringify({
-        'state': 'on',
-        morning: '000',
-        night: '888'
-    });
-    xhr.setRequestHeader('Content-type', 'application/json')
-    xhr.send(data);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText);
+    function ajax(method, path, data) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(method, path);
+        var data = JSON.stringify(data);
+        xhr.setRequestHeader('Content-type', 'application/json')
+        xhr.send(data);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log(xhr.responseText);
+            }
+            else {
+                console.log(xhr.statusText);
+            }
         }
-        else {
-            console.log(xhr.statusText);
-        }
+    }
+
+    window.onload = function() {
+        document.querySelector('#submit-btn').addEventListener('click', function() {
+            var mormingTime = document.querySelector('#morming').value;
+            var nightTime = document.querySelector('#night').value;
+            // var switch = document.querySelector('#switch').value;
+            var isOpen = document.querySelector('#switch').checked;
+            ajax('POST',  '/api/update_setting', {
+                isOpen: isOpen,
+                morning: mormingTime,
+                night: nightTime
+            })  
+        })
     }
 
 </script>

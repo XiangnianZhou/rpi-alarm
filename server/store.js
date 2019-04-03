@@ -10,7 +10,7 @@ const writeFile = util.promisify(fs.writeFile);
 const settingFilePath = path.resolve(__dirname, 'setting.json');
 
 async function set(content = {}) {
-    if (content.morning && content.night && content.state) {
+    if (content.morning && content.night && typeof content.isOpen === 'boolean') {
         await writeFile(settingFilePath, JSON.stringify(content));
     } else {
         return false;

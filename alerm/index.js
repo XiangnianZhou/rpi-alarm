@@ -2,8 +2,8 @@
 const beep = require('./beep');
 const light = require('./light');
 
-module.exports = function alerm(time = 0.1, isMorning = false, action) {
-    if (isMorning) {
+module.exports = function alerm(time = 6, action, isInitLight = false) {
+    if (isInitLight) {
         light.on();
         light.init();
     }

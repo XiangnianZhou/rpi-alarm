@@ -37,6 +37,21 @@
             vertical-align: middle;
         }
 
+
+        button {
+            background-color: #4285f4;
+            color: #fff;
+            border: none;
+            outline: none;
+            height: 44px;
+            line-height: 44px;
+            text-align: center;
+            display: block;
+            width: 86%;
+            margin: auto;
+            border-radius: 2px;
+        }
+
     </style>
 </head>
 <body>
@@ -57,38 +72,59 @@
                     <label for="switch">打开闹钟</label>
             </div>
     </main>
-
     <button id="submit-btn">提交</button>
     
 </body>
 <script>
-    function ajax(method, path, data) {
+    function ajax(method, path, data, onSuccess) {
         var xhr = new XMLHttpRequest();
         xhr.open(method, path);
         var data = JSON.stringify(data);
         xhr.setRequestHeader('Content-type', 'application/json')
-        xhr.send(data);
+        
         xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                console.log(xhr.responseText);
-            }
-            else {
-                console.log(xhr.statusText);
+            if (xhr.readyState == 4) {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    try {
+                        var response = JSON.parse(xhr.response);
+                        onSuccess(response); 
+                    } catch(e) {
+                        alert('借口数据错误')
+                    }
+                } else {
+                    alert(xhr.status + ':' + xhr.response || '请求出错')
+                }
             }
         }
+        xhr.send(data);
     }
 
     window.onload = function() {
+        ajax('GET', '/api/get_setting', '', function(res) {
+            console.log(res)
+            var data = res.data;
+            console.log(typeof res)
+            document.querySelector('#morming').value = data.morning;
+            document.querySelector('#night').value = data.night;
+            document.querySelector('#switch').checked = data.isOpen;
+        })
+
+
         document.querySelector('#submit-btn').addEventListener('click', function() {
             var mormingTime = document.querySelector('#morming').value;
             var nightTime = document.querySelector('#night').value;
-            // var switch = document.querySelector('#switch').value;
             var isOpen = document.querySelector('#switch').checked;
+            if (!mormingTime || !nightTime) {
+                alert('早上和晚上时间必填');
+                return;
+            }
             ajax('POST',  '/api/update_setting', {
                 isOpen: isOpen,
                 morning: mormingTime,
                 night: nightTime
-            })  
+            }, function() {
+                alert('设置成功');
+            });
         })
     }
 

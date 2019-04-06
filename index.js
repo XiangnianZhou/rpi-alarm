@@ -1,11 +1,82 @@
 // const alerm = require('./alerm/index');
-const server = require('./server/index');
-
-const update = function onUpdateSetting() {
-    // 
+// mock
+const alerm = function() {
+    console.log('叫起来..')
 }
 
-server.start();
+const server = require('./server/index');
+const dayjs = require('dayjs');
+
+let setting = {};
+
+const mainTimer = function () {
+    if (!setting.isOpen) { return; }
+    setTimeout(() => {
+        const hour = dayjs().hour();
+
+        const isOverMinutes = function(minutes = 0) {
+            let today;
+            if (hour < 4) {  
+                // 早上4点前，认为是前一天的晚上
+                today = dayjs().subtract(1, 'day').format('yyyy-MM-dd');
+            } else {
+                today = dayjs().format('yyyy-MM-dd');
+            }
+            const setingTime = {
+                moring: dayjs(`${today} ${setting.moring}`),
+                night: dayjs(`${today} ${setting.night}`)
+            }
+            const isMorningOver = dayjs().second(0) === setingTime.moring.add(10, 'minute').second(0);
+            const isNightOver = dayjs().second(0) === setingTime.night.add(10, 'minute').second(0);
+            return dayjs(isMorningOver || isNightOver);
+        };
+
+        
+        if (isOverMinutes(0)) {
+            alerm(5, '', hour < 12);
+            setTimeout(mainTimer, 60000);
+        } else if (isOverMinutes(15)) {
+            alerm(10, 'up');  // 晚上不亮灯，up无效
+            setTimeout(mainTimer, 60000);
+        } else if (isOverMinutes(30)) {
+            alerm(20, 'up');
+            setTimeout(mainTimer, 60000);
+        } else if (isOverMinutes(40)) {
+            alerm(30, 'up');
+            setTimeout(mainTimer, 60000);
+        } else if (isOverMinutes(50)) {
+            alerm(30, 'up');
+            setTimeout(mainTimer, 60000);
+        } else if (isOverMinutes(60)) {
+            alerm(30, 'up');
+            setTimeout(mainTimer, 60000);
+        } else if (isOverMinutes(70)) {
+            alerm(40, 'up');
+            setTimeout(mainTimer, 60000);
+        } else if (isOverMinutes(80)) {
+            alerm(50, 'up');
+            setTimeout(mainTimer, 60000);
+        } else if (isOverMinutes(90)) {
+            alerm(60, false, hour < 12 && hour > 4 ? 'off' : '');
+            setTimeout(mainTimer, 60000);
+        } else {
+            mainTimer();
+        }
+    }, 1500); 
+};
+
+const update = function onUpdateSetting({isOpen = false, morning = '', night = ''} = res) {
+    setting = {
+        isOpen,
+        morning,
+        night
+    }
+};
+
 server.settingState.on('update', (res) => {
-    console.log(res);
+    update(res)
 });
+server.start();
+
+// fire
+mainTimer();

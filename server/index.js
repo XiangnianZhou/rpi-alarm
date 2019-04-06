@@ -15,7 +15,6 @@ app.use(
 );
 app.use(koaBody());
 
-
 const home = new Router();
 home.get('/', async (ctx, next) => {
     ctx.status = 302;
@@ -44,6 +43,7 @@ api.get('/get_setting', async (ctx, next) => {
         data: setting
     }
 })
+
 api.post('/update_setting', async (ctx, next) => {
     let setting = ctx.request.body;
     await store.set(setting);
@@ -54,12 +54,14 @@ api.post('/update_setting', async (ctx, next) => {
 });
 
 
+
 const router = new Router();
 router.use('/', home.routes(), home.allowedMethods());
 router.use('/api', api.routes(), api.allowedMethods());
 
 
 app.use(router.routes()).use(router.allowedMethods());
+
 
 module.exports = {
     start() {

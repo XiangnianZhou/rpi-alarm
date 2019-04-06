@@ -62,6 +62,9 @@ router.use('/api', api.routes(), api.allowedMethods());
 
 app.use(router.routes()).use(router.allowedMethods());
 
+setImmediate(async () => {
+    emmiter.emit('update', await store.get());
+}, 100)
 
 module.exports = {
     start() {
@@ -69,4 +72,3 @@ module.exports = {
     },
     settingState: emmiter
 }
-

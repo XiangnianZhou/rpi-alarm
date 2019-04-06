@@ -10,28 +10,31 @@ const dayjs = require('dayjs');
 let setting = {};
 
 const mainTimer = function () {
-    if (!setting.isOpen) { return; }
-    setTimeout(() => {
+        setTimeout(() => {
+        if (!setting.isOpen) { 
+            mainTimer();
+            return; 
+        }
         const hour = dayjs().hour();
 
         const isOverMinutes = function(minutes = 0) {
             let today;
             if (hour < 4) {  
                 // 早上4点前，认为是前一天的晚上
-                today = dayjs().subtract(1, 'day').format('yyyy-MM-dd');
+                today = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
             } else {
-                today = dayjs().format('yyyy-MM-dd');
+                today = dayjs().format('YYYY-MM-DD');
             }
             const setingTime = {
-                moring: dayjs(`${today} ${setting.moring}`),
+                morning: dayjs(`${today} ${setting.morning}`),
                 night: dayjs(`${today} ${setting.night}`)
             }
-            const isMorningOver = dayjs().second(0) === setingTime.moring.add(10, 'minute').second(0);
-            const isNightOver = dayjs().second(0) === setingTime.night.add(10, 'minute').second(0);
-            return dayjs(isMorningOver || isNightOver);
+
+            const isMorningOver = dayjs().second(0).unix() === setingTime.morning.add(minutes, 'minute').second(0).unix();
+            const isNightOver = dayjs().second(0).unix() === setingTime.night.add(minutes, 'minute').second(0).unix();
+            return isMorningOver || isNightOver;
         };
 
-        
         if (isOverMinutes(0)) {
             alerm(5, '', hour < 12);
             setTimeout(mainTimer, 60000);
@@ -74,7 +77,7 @@ const update = function onUpdateSetting({isOpen = false, morning = '', night = '
 };
 
 server.settingState.on('update', (res) => {
-    update(res)
+    update(res);
 });
 server.start();
 

@@ -16,7 +16,7 @@ module.exports = function alerm(time = 6, action, isInitLight = false) {
         if (action) {
             light[action]();
         }
-
+        
         beep(time);
     }
 }

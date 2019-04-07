@@ -1,8 +1,4 @@
-// const alerm = require('./alerm/index');
-// mock
-const alerm = function() {
-    console.log('叫起来..')
-}
+const alerm = require('./alerm/index');
 
 const server = require('./server/index');
 const dayjs = require('dayjs');

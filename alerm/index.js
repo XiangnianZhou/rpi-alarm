@@ -6,7 +6,7 @@ const getBrighterState = require('./brighter');
 module.exports = function alerm(time = 6, action, isInitLight = false) {
     const now = new Date().getHours;
     const isMorning = now > 4 && now < 12;
-    const isSleeping = getBrighterState();
+    const isSleeping = !!getBrighterState();
 
     if ((isMorning && isSleeping) || (!isMorning && !isSleeping)) {
         if (isInitLight) {
@@ -16,7 +16,7 @@ module.exports = function alerm(time = 6, action, isInitLight = false) {
         if (action) {
             light[action]();
         }
-        
+
         beep(time);
     }
 }

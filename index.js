@@ -31,6 +31,10 @@ const mainTimer = function () {
             return isMorningOver || isNightOver;
         };
 
+    //    console.log( isOverMinutes(0), '1111')
+    //    console.log( isOverMinutes(3) ,  '2222')
+    //    console.log( isOverMinutes(4), '9999')
+
         if (isOverMinutes(0)) {
             alerm(5, '', hour < 12);
             setTimeout(mainTimer, 60000);
@@ -70,6 +74,7 @@ const update = function onUpdateSetting({isOpen = false, morning = '', night = '
         morning,
         night
     }
+    console.log('update setting:', setting);
 };
 
 server.settingState.on('update', (res) => {

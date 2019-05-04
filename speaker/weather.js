@@ -14,25 +14,31 @@ const playAudio = function (url) {
 const getUrl = function getXmlyMediaUrl() {
   return new Promise((resolve, rejects) => {
     request.get(xmlyAPI, (error, response, body) => {
-      const res = JSON.parse(body);
-      if (!error && body && res.data && res.data.tracksAudioPlay) {
-        const url = res.data.tracksAudioPlay[0].src;
-        resolve(url);
-      } else {
-        rejects('喜马拉雅数据错误');
+      let conuter = 0;
+      try {
+        const res = JSON.parse(body);
+        if (!error && body && res.data && res.data.tracksAudioPlay) {
+          const url = res.data.tracksAudioPlay[0].src;
+          resolve(url);
+        } else {
+          rejects('喜马拉雅数据错误');
+        }
+      } catch(e) {
+        // 重试三次
+        if (conuter < 3) {
+          conuter++;
+          getUrl(url);
+        } else {
+          console.log('喜马拉雅请求失败')
+        }
       }
     });
   });
 }
 
-
 module.exports = function () {
   getUrl().then(url => {
-    playAudio(url).then (() => {
-      // 播放两遍
-      setTimeout(() => {
-        playAudio(url);
-      }, 1000 * 6);
-    });
+    console.log(url)
+    playAudio(url);
   });
 }

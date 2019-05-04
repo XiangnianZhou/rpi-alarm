@@ -38,7 +38,6 @@ const getUrl = function getXmlyMediaUrl() {
 
 module.exports = function () {
   getUrl().then(url => {
-    console.log(url)
     playAudio(url);
   });
 }

@@ -14,7 +14,7 @@ const playAudio = function (url) {
 const getUrl = function getXmlyMediaUrl() {
   return new Promise((resolve, rejects) => {
     request.get(xmlyAPI, (error, response, body) => {
-      let conuter = 0;
+      console.log(body)
       try {
         const res = JSON.parse(body);
         if (!error && body && res.data && res.data.tracksAudioPlay) {
@@ -24,20 +24,16 @@ const getUrl = function getXmlyMediaUrl() {
           rejects('喜马拉雅数据错误');
         }
       } catch(e) {
-        // 重试三次
-        if (conuter < 3) {
-          conuter++;
-          getUrl(url);
-        } else {
-          console.log('喜马拉雅请求失败')
-        }
+        rejects(e);
       }
     });
   });
 }
 
-module.exports = function () {
+module.exports = function  wether () {
   getUrl().then(url => {
     playAudio(url);
-  });
+  }).catch(e => {
+    // wether();
+  }) ;
 }

@@ -15,7 +15,6 @@
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "onoff": "^4.1.0",
-    "puppeteer": "^1.16.0",
     "request": "^2.88.0"
   }
 }

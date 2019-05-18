@@ -30,9 +30,7 @@ const getUrl = function getXmlyMediaUrl() {
 }
 
 module.exports = function  wether () {
-  getUrl().then(url => {
+  return getUrl().then(url => {
     playAudio(url);
-  }).catch(e => {
-    // wether();
-  }) ;
+  });
 }

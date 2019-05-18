@@ -33,9 +33,11 @@ const mainTimer = function () {
         };
 
         if (isOverMinutes(0)) {
-            alerm(5, '', hour < 12);
             // 早晚第一次闹铃后要播放天气预报
-            speaker.wether();
+            speaker.wether().catch(() => {
+                alerm(5, '', hour < 12);
+            });
+
             setTimeout(mainTimer, 60000);
         } else if (isOverMinutes(15)) {
             alerm(10, 'up');  // 晚上不亮灯，up无效

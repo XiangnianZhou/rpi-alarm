@@ -1,7 +1,9 @@
 const exec = require('child_process').exec;
 const request = require('request');
 
-const xmlyAPI = 'http://m.ximalaya.com/mobile/v1/track/share/content?trackId=184619977&tpName=weixin&device=h5';
+// const xmlyAPI = 'http://m.ximalaya.com/mobile/v1/track/share/content?trackId=184619977&tpName=weixin&device=h5';
+// 页面地址: http://m.ximalaya.com/toutiao/22689810/
+const xmlyAPI = 'http://m.ximalaya.com/m-revision/page/album/queryAlbumPage/22689810';
 
 const playAudio = function (url) {
   return new Promise(resolve => {
@@ -16,8 +18,10 @@ const getUrl = function getXmlyMediaUrl() {
     request.get(xmlyAPI, (error, response, body) => {
       try {
         const res = JSON.parse(body);
-        if (!error && body && res.audioUrl) {
-          const url = res.audioUrl;
+        // console.log(res.data);
+        if (!error && body && res.data) {
+          const weatherInfoList = res.data.typeSpecData.freeOrSingleAlbumData.albumPageTrackRecords.trackDetailInfos;
+          const url = weatherInfoList[0].trackInfo.playPath;
           resolve(url);
         } else {
           rejects('喜马拉雅数据错误');

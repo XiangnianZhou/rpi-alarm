@@ -33,7 +33,7 @@ const mainTimer = function () {
         };
 
         if (isOverMinutes(0)) {
-            // 早晚第一次闹铃后要播放天气预报
+            // 早晚第一次闹铃时播放天气预报
             speaker.wether().catch(() => {
                 alerm(5, '', hour < 12);
             });

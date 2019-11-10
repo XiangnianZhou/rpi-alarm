@@ -61,6 +61,7 @@ const mainTimer = function() {
                     });
                 setTimeout(mainTimer, 60000 * 60);
             } else {
+                alerm(5, '', hour < 12);
                 setTimeout(mainTimer, 60000);
             }
         } else if (isOverMinutes(15)) {

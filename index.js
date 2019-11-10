@@ -50,16 +50,19 @@ const mainTimer = function() {
 
         if (isOverMinutes(0)) {
             // 早晚第一次闹铃时播放天气预报
-            speaker
-                .news()
-                .catch(() => {
-                    alerm(5, '', hour < 12);
-                })
-                .then(() => {
-                    return speaker.english();
-                });
-
-            setTimeout(mainTimer, 60000);
+            if (hour < 10 && hour > 4) {
+                speaker
+                    .news()
+                    .catch(() => {
+                        alerm(5, '', hour < 12);
+                    })
+                    .then(() => {
+                        return speaker.english();
+                    });
+                setTimeout(mainTimer, 60000 * 60);
+            } else {
+                setTimeout(mainTimer, 60000);
+            }
         } else if (isOverMinutes(15)) {
             alerm(10, 'up'); // 晚上不亮灯，up无效
             setTimeout(mainTimer, 60000);

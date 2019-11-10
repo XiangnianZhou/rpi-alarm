@@ -6,7 +6,7 @@ const dayjs = require('dayjs');
 
 let setting = {};
 
-const mainTimer = function () {
+const mainTimer = function() {
     setTimeout(() => {
         if (!setting.isOpen) {
             mainTimer();
@@ -14,33 +14,54 @@ const mainTimer = function () {
         }
         const hour = dayjs().hour();
 
-        const isOverMinutes = function (minutes = 0) {
+        const isOverMinutes = function(minutes = 0) {
             let today;
             if (hour < 4) {
                 // 早上4点前，认为是前一天的晚上
-                today = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+                today = dayjs()
+                    .subtract(1, 'day')
+                    .format('YYYY-MM-DD');
             } else {
                 today = dayjs().format('YYYY-MM-DD');
             }
             const setingTime = {
                 morning: dayjs(`${today} ${setting.morning}`),
                 night: dayjs(`${today} ${setting.night}`)
-            }
+            };
 
-            const isMorningOver = dayjs().second(0).unix() === setingTime.morning.add(minutes, 'minute').second(0).unix();
-            const isNightOver = dayjs().second(0).unix() === setingTime.night.add(minutes, 'minute').second(0).unix();
+            const isMorningOver =
+                dayjs()
+                    .second(0)
+                    .unix() ===
+                setingTime.morning
+                    .add(minutes, 'minute')
+                    .second(0)
+                    .unix();
+            const isNightOver =
+                dayjs()
+                    .second(0)
+                    .unix() ===
+                setingTime.night
+                    .add(minutes, 'minute')
+                    .second(0)
+                    .unix();
             return isMorningOver || isNightOver;
         };
 
         if (isOverMinutes(0)) {
             // 早晚第一次闹铃时播放天气预报
-            speaker.wether().catch(() => {
-                alerm(5, '', hour < 12);
-            });
+            speaker
+                .news()
+                .catch(() => {
+                    alerm(5, '', hour < 12);
+                })
+                .then(() => {
+                    return speaker.english();
+                });
 
             setTimeout(mainTimer, 60000);
         } else if (isOverMinutes(15)) {
-            alerm(10, 'up');  // 晚上不亮灯，up无效
+            alerm(10, 'up'); // 晚上不亮灯，up无效
             setTimeout(mainTimer, 60000);
         } else if (isOverMinutes(30)) {
             alerm(20, 'up');
@@ -69,16 +90,20 @@ const mainTimer = function () {
     }, 1500);
 };
 
-const update = function onUpdateSetting({ isOpen = false, morning = '', night = '' } = res) {
+const update = function onUpdateSetting({
+    isOpen = false,
+    morning = '',
+    night = ''
+} = res) {
     setting = {
         isOpen,
         morning,
         night
-    }
+    };
     console.log('update setting:', setting);
 };
 
-server.settingState.on('update', (res) => {
+server.settingState.on('update', res => {
     update(res);
 });
 server.start();

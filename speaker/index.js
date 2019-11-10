@@ -1,4 +1,6 @@
-const wether = require('./weather');
+const news = require('./news');
+const english = require('./english');
 module.exports = {
-  wether
-}
+    news,
+    english
+};

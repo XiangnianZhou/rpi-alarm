@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const exec = require('child_process').exec;
+const exec = require('shelljs').exec;
 
 const startDay = new Date('2019/11/06').getTime();
 

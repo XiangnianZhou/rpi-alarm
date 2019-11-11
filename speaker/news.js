@@ -1,4 +1,4 @@
-const exec = require('child_process').exec;
+const exec = require('shelljs').exec;
 const request = require('request');
 
 // const xmlyAPI = 'http://m.ximalaya.com/mobile/v1/track/share/content?trackId=184619977&tpName=weixin&device=h5';
